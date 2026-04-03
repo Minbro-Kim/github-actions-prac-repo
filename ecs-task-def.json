@@ -45,7 +45,7 @@
     },
     {
       "name": "my-springboot-container",
-      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/my-app-repo:${IMAGE_TAG}",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/my-demo-repo-1:${IMAGE_TAG}",
       "essential": true,
       "portMappings": [
         {
