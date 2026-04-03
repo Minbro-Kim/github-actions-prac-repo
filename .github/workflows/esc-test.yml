@@ -106,7 +106,7 @@ jobs:
       #          aws ecs register-task-definition \
       #            --cli-input-json file://task-def.rendered.json
       - name: 새로운 작업 정의 등록
-        id: register task definition
+        id: register-task
         run: |
           TASK_DEF_ARN=$(aws ecs register-task-definition \
             --cli-input-json file://task-def.rendered.json \
