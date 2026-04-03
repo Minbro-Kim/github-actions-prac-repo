@@ -11,6 +11,14 @@ spring:
     init:
       mode: always
 
+aws:
+  s3:
+    bucket: test-bucket
+  credentials:
+    access-key: dummy-access-key
+    secret-key: dummy-secret-key
+  region: ap-northeast-2
+
 logging:
   level:
     com.sprint.mission.discodeit: debug

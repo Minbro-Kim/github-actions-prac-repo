@@ -20,4 +20,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: 빌드 및 테스트
-        run: docker build -t test-image .
+        run: ./gradlew clean build
+
+      - name: 커밋 해시태그 설정
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+          docker build -t myapp:$IMAGE_TAG .
