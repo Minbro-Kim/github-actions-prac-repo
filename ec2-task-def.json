@@ -1,0 +1,118 @@
+{
+  "family": "my-app-task",
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "networkMode": "bridge",
+  "cpu": "512",
+  "memory": "768",
+  "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/my-ecs-task-execution-policy",
+  "taskRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/my-ecs-task-execution-policy",
+  "containerDefinitions": [
+    {
+      "name": "postgres-db",
+      "image": "postgres:15",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "containerPort": 5432,
+          "hostPort": 5432,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "POSTGRES_DB",
+          "value": "${DB_NAME}"
+        },
+        {
+          "name": "POSTGRES_USER",
+          "value": "${DB_USER}"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "${DB_PASSWORD}"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/my-springboot-app",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "db",
+          "awslogs-create-group": "true"
+        }
+      }
+    },
+    {
+      "name": "my-springboot-container",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/my-demo-repo-1:${IMAGE_TAG}",
+      "essential": true,
+      "memory": 512,
+      "links": [
+        "postgres-db"
+      ],
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "prod"
+        },
+        {
+          "name": "DB_URL",
+          "value": "jdbc:postgresql://postgres-db:5432/${DB_NAME}"
+        },
+        {
+          "name": "DB_USER_NAME",
+          "value": "${DB_USER}"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "${DB_PASSWORD}"
+        },
+        {
+          "name": "SPRING_BOOT_ADMIN_CLIENT_URL",
+          "value": "http://localhost:8080"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "${AWS_REGION}"
+        },
+        {
+          "name": "AWS_S3_BUCKET_NAME",
+          "value": "${AWS_S3_BUCKET_NAME}"
+        },
+        {
+          "name": "SPRING_SQL_INIT_MODE",
+          "value": "always"
+        },
+        {
+          "name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+          "value": "validate"
+        }
+      ],
+      "dependsOn": [
+        {
+          "containerName": "postgres-db",
+          "condition": "START"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/my-springboot-app",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "app",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

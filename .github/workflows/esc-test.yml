@@ -96,7 +96,7 @@ jobs:
           export DB_USER=${{ secrets.DB_USER }}
           export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           export AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
-          envsubst < ecs-task-def.json > task-def.rendered.json
+          envsubst < ec2-task-def.json > task-def.rendered.json
           echo "=== Rendered task def ==="
           cat task-def.rendered.json
 
